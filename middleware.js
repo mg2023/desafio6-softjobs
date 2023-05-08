@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-// a. Verificar la existencia de credenciales en la ruta que corresponda
+//2 a. Verificar la existencia de credenciales en la ruta que corresponda
 function verificarExistenciaDeCredenciales(fields) {
   return function (req, res, next) {
     const missingFields = fields.filter(field => !(field in req.body));

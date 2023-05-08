@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const jwt = require('jsonwebtoken')
 const { verificarExistenciaDeCredenciales, verificarToken, logEnElTerminal } = require('./middleware')
-const { registrarUsuario, verificarCredenciales, leerRegistro } = require('./consultas')
+const { verificarEmail, registrarUsuario, verificarCredenciales, leerRegistro } = require('./consultas')
 
 const cors = require('cors')
 
@@ -17,8 +17,13 @@ const requiredFields = ['email', 'password', 'rol', 'lenguage'];
 // 1. REGISTRAR y obtener usuarios de la base de datos (1.5 puntos)
 app.post('/usuarios', logEnElTerminal, verificarExistenciaDeCredenciales(requiredFields), async (req, res) => {
     try {
-        const usuario = req.body
-        registrarUsuario(usuario)
+        const usuario = req.body  
+        const status = await verificarEmail(usuario.email)    
+        if (status === true){
+            throw { code: 401, message: "Usuario ya existe" }
+        }
+
+        await registrarUsuario(usuario)
         res.send("Usuario creado con éxito")
     }
     catch(error) {
